@@ -219,3 +219,57 @@ Các điểm kỹ thuật cần chú ý:
 2. Dựng khung dự án Flutter + bản đồ MapLibre hiển thị vị trí và tốc độ (giai đoạn 1).
 3. Tải dữ liệu OSM Việt Nam, kiểm tra mức độ đầy đủ dữ liệu tốc độ/một chiều tại địa bàn thử nghiệm.
 4. Xây dựng file dữ liệu mẫu (vài chục điểm camera, biển cấm vượt) để thử thuật toán cảnh báo.
+
+---
+
+## 10. Bổ sung: Tự nhận diện biển báo bằng camera hành trình
+
+### 10.1. Tính khả thi
+**Làm được.** Công nghệ hiện nay (mô hình YOLO bản nhẹ) chạy được ngay trên điện thoại tầm trung. Đây là chức năng nhóm C (khó), nhưng dễ hơn cảnh báo làn đường và khoảng cách, nên **làm đầu tiên trong nhóm C**.
+
+### 10.2. Nguồn hình ảnh – so sánh phương án
+
+| Phương án | Ưu điểm | Nhược điểm | Đánh giá |
+|---|---|---|---|
+| **1. Camera điện thoại làm camera hành trình** | Đơn giản nhất, kiểm soát hoàn toàn hình ảnh, không cần thiết bị thêm | Điện thoại nóng, tốn pin khi gắn kính lái lâu; phải gắn đúng vị trí | **Khuyến nghị làm trước** |
+| 2. Camera hành trình rời, truyền qua WiFi | Tận dụng thiết bị sẵn có, góc quay tốt | Mỗi hãng một giao thức riêng, nhiều loại không cho lấy hình trực tiếp; có độ trễ; điện thoại phải nối WiFi camera | Chỉ làm sau, với một vài mẫu camera cụ thể (cần thử từng mẫu) |
+| 3. Xử lý video đã ghi (không trực tiếp) | Không cần xử lý nhanh; tự động **lập bản đồ biển báo** từ video + nhật ký GPS | Không cảnh báo tức thời | **Rất nên làm** – phục vụ thu thập dữ liệu cho giai đoạn 2 |
+| 4. Thiết bị riêng (máy tính nhúng + camera) | Hiệu năng ổn định, chạy 24/7 | Phải làm phần cứng, chi phí cao | Chỉ khi hướng tới sản phẩm thương mại |
+
+### 10.3. Cách hoạt động (2 bước)
+
+```
+Mỗi khung hình (xử lý 5–10 khung/giây là đủ):
+  B1. PHÁT HIỆN: mô hình YOLO tìm vị trí các biển báo trong ảnh
+  B2. PHÂN LOẠI: xác định đúng loại biển theo QCVN 41:2024
+      (P.127 tốc độ tối đa + đọc con số; P.125 cấm vượt; P.102 cấm đi ngược chiều; ...)
+
+  Xác nhận: cùng một biển xuất hiện ≥ 3 khung hình liên tiếp mới tính là thấy thật
+  Kết hợp:
+    - Trùng dữ liệu bản đồ  -> tăng độ tin cậy, hiển thị biển lên màn hình
+    - Bản đồ chưa có biển   -> vẫn cảnh báo, đồng thời gửi về máy chủ làm "điểm đề xuất"
+    - Bản đồ có, camera không thấy nhiều lần -> đánh dấu "cần kiểm tra lại" (biển có thể đã bị tháo)
+```
+
+### 10.4. Khó khăn cần lường trước
+
+| Khó khăn | Hướng xử lý |
+|---|---|
+| Biển ban đêm, mưa, ngược sáng, bị cây che | Thu thập ảnh đủ các điều kiện khi huấn luyện; kết hợp dữ liệu bản đồ |
+| Biển của đường bên cạnh, đường gom | So hướng biển, vị trí trong khung hình (bên phải/trên đầu) với làn xe đang đi |
+| Biển phụ ("trừ xe buýt", "6h–22h", "ô tô con") | Giai đoạn đầu chỉ nhận diện biển chính; biển phụ để sau |
+| Hiệu lực biển hết khi qua nút giao | Dùng dữ liệu bản đồ để xác định điểm hết hiệu lực |
+| Điện thoại quá nóng | Giảm tần suất xử lý, giảm độ phân giải ảnh, khuyến cáo gắn chỗ khuất nắng |
+
+### 10.5. Các bước thực hiện (khoảng 3–4 tháng)
+
+1. **Thu thập ảnh:** quay video trên các tuyến thử nghiệm (ngày, đêm, mưa).
+2. **Gán nhãn:** khoanh vùng biển báo trên ảnh (công cụ miễn phí: CVAT, Label Studio). Bắt đầu với khoảng 15–20 loại biển thường gặp, mỗi loại vài trăm ảnh.
+   Có thể tận dụng bộ dữ liệu biển báo Việt Nam công khai (ví dụ bộ dữ liệu của cuộc thi Zalo AI Challenge 2020) – *cần kiểm tra giấy phép sử dụng*.
+3. **Huấn luyện mô hình:** dùng Google Colab (miễn phí/giá rẻ), chuyển sang định dạng TensorFlow Lite để chạy trên điện thoại.
+4. **Tích hợp vào ứng dụng:** màn hình camera, biểu tượng biển vừa thấy, cảnh báo giọng nói.
+5. **Thử nghiệm thực tế:** đo tỷ lệ nhận đúng, bỏ sót, nhận nhầm; mục tiêu ban đầu ≥ 90% với biển rõ ràng ban ngày.
+
+### 10.6. Lưu ý pháp lý
+- Video ghi được có thể chứa khuôn mặt, biển số xe – là dữ liệu cá nhân theo Nghị định 13/2023/NĐ-CP. Khi gửi về máy chủ **chỉ gửi tọa độ + loại biển** (hoặc ảnh cắt riêng vùng biển báo), không gửi toàn bộ video.
+- Kết quả nhận diện chỉ mang tính hỗ trợ; người lái phải tuân theo biển báo thực tế.
