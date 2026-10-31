@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Giao thông an toàn",
+    "slug": "giao-thong-an-toan",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "vn.giaothongantoan.app",
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "FOREGROUND_SERVICE", "FOREGROUND_SERVICE_LOCATION"]
+    },
+    "ios": {
+      "bundleIdentifier": "vn.giaothongantoan.app",
+      "supportsTablet": true
+    },
+    "plugins": [
+      "@maplibre/maplibre-react-native",
+      "expo-sqlite",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Ứng dụng cần vị trí để dẫn đường và cảnh báo tốc độ, camera, biển báo.",
+          "locationAlwaysAndWhenInUsePermission": "Cho phép chạy nền để tiếp tục cảnh báo khi tắt màn hình.",
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ]
+    ]
+  }
+}

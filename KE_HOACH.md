@@ -43,6 +43,8 @@
 
 > Với nền tảng Pascal + thuật toán cơ bản, Flutter (ngôn ngữ Dart) có cú pháp rõ ràng, dễ học hơn cả.
 
+> **Cập nhật 31/10/2026:** Do nhóm đã quen Next.js/React/NestJS/PostGIS, chuyển sang **React Native (Expo) + MapLibre** cho ứng dụng di động và **NestJS + PostGIS + Redis** cho backend. Chi tiết và lý do: `docs/KIEN_TRUC.md`.
+
 ### 3.2. Bản đồ và dữ liệu đường
 
 | Phương án | Ưu điểm | Nhược điểm |

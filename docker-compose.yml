@@ -1,0 +1,45 @@
+# Chạy: docker compose up -d   (lần đầu tự tạo bảng từ db/init)
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: gtat
+      POSTGRES_PASSWORD: gtat
+      POSTGRES_DB: gtat
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgres://gtat:gtat@db:5432/gtat
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
+    ports: ["3000:3000"]
+    depends_on: [db, redis]
+
+  # Phát vector tile trực tiếp từ PostGIS cho trang quản trị (tùy chọn)
+  martin:
+    image: ghcr.io/maplibre/martin:latest
+    command: ["--default-srid", "4326"]
+    environment:
+      DATABASE_URL: postgres://gtat:gtat@db:5432/gtat
+    ports: ["3001:3000"]
+    depends_on: [db]
+
+  # Máy chủ tìm đường online (tùy chọn) – cần đặt file vietnam-latest.osm.pbf vào ./data/valhalla
+  # valhalla:
+  #   image: ghcr.io/valhalla/valhalla-scripted:latest
+  #   ports: ["8002:8002"]
+  #   volumes: ["./data/valhalla:/custom_files"]
+
+volumes:
+  pgdata:

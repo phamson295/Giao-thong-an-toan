@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.next/
+.expo/
+android/
+ios/
+*.log
+.env
+*.osm.pbf
+*.pmtiles
+ml/runs/
+ml/datasets/

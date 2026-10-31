@@ -1,0 +1,15 @@
+{
+  "name": "giao-thong-an-toan",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "npm run test -w @gtat/shared",
+    "dev:api": "npm run start:dev -w @gtat/api",
+    "dev:admin": "npm run dev -w @gtat/admin",
+    "dev:mobile": "npm run start -w @gtat/mobile",
+    "db:up": "docker compose up -d db redis"
+  }
+}
