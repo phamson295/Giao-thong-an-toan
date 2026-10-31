@@ -6,6 +6,7 @@
     "orientation": "default",
     "android": {
       "package": "vn.giaothongantoan.app",
+      "versionCode": 1,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",

@@ -237,12 +237,4 @@ Muốn tạo tuyến khác: sửa tọa độ trong `tools\gia-lap\tao_tuyen.py`
 
 ## 9. Tạo file cài đặt (.apk) để gửi cho người khác thử
 
-Cách đơn giản nhất là dùng dịch vụ build đám mây của Expo (EAS, cần tạo tài khoản miễn phí tại https://expo.dev):
-```
-cd apps\mobile
-npx eas-cli build -p android --profile preview
-```
-Lần đầu lệnh sẽ hỏi tạo cấu hình. Chọn mặc định, và khi được hỏi loại file thì chọn **APK**.
-Xong sẽ có đường link tải file `.apk`, gửi cho người khác cài trực tiếp.
-
-> Giới hạn số lượt build miễn phí của Expo có thể thay đổi, cần kiểm tra trên trang expo.dev.
+Xem hướng dẫn riêng: [`docs/HUONG_DAN_TAO_APK.md`](HUONG_DAN_TAO_APK.md).
