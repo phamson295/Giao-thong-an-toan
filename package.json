@@ -10,6 +10,7 @@
     "dev:api": "npm run start:dev -w @gtat/api",
     "dev:admin": "npm run dev -w @gtat/admin",
     "dev:mobile": "npm run start -w @gtat/mobile",
-    "db:up": "docker compose up -d db redis"
+    "db:up": "docker compose up -d db redis",
+    "android": "npm run android -w @gtat/mobile"
   }
 }

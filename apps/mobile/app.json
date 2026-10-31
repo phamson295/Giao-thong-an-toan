@@ -4,16 +4,28 @@
     "slug": "giao-thong-an-toan",
     "version": "0.1.0",
     "orientation": "default",
-    "userInterfaceStyle": "automatic",
     "android": {
       "package": "vn.giaothongantoan.app",
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "FOREGROUND_SERVICE", "FOREGROUND_SERVICE_LOCATION"]
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_LOCATION"
+      ]
     },
     "ios": {
       "bundleIdentifier": "vn.giaothongantoan.app",
       "supportsTablet": true
     },
     "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
       "@maplibre/maplibre-react-native",
       "expo-sqlite",
       [
