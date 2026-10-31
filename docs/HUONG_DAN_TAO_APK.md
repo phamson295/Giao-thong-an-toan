@@ -50,14 +50,14 @@ Phần này cần hướng dẫn riêng. Báo tôi khi bạn đã có VPS.
 ## 2. CÁCH 1 – Build APK trên máy tính
 
 ### Bước 1. Đặt địa chỉ backend
-Mở file `C:\gtat\apps\mobile\.env`, sửa theo phương án đã chọn ở mục 0:
+Mở file `D:\AI_CLAUDE\gtat\apps\mobile\.env`, sửa theo phương án đã chọn ở mục 0:
 ```
 EXPO_PUBLIC_API_URL=https://xxxx-xxxx.trycloudflare.com
 ```
 (Phương án A: để nguyên, không cần sửa.)
 
 ### Bước 2. Tăng số phiên bản (từ lần gửi thứ 2 trở đi)
-Mở `C:\gtat\apps\mobile\app.json`, tăng 2 giá trị:
+Mở `D:\AI_CLAUDE\gtat\apps\mobile\app.json`, tăng 2 giá trị:
 ```json
 "version": "0.1.1",
 ...
@@ -68,7 +68,7 @@ Mở `C:\gtat\apps\mobile\app.json`, tăng 2 giá trị:
 ### Bước 3. Sinh lại dự án Android và build
 Mở Command Prompt:
 ```
-cd C:\gtat\apps\mobile
+cd /d D:\AI_CLAUDE\gtat\apps\mobile
 npx expo prebuild --platform android --clean
 cd android
 gradlew.bat assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
@@ -82,7 +82,7 @@ Lần đầu mất 10–20 phút. Thấy dòng **`BUILD SUCCESSFUL`** là xong.
 ### Bước 4. Lấy file APK
 File nằm tại:
 ```
-C:\gtat\apps\mobile\android\app\build\outputs\apk\release\app-release.apk
+D:\AI_CLAUDE\gtat\apps\mobile\android\app\build\outputs\apk\release\app-release.apk
 ```
 Đổi tên cho dễ nhận biết, ví dụ `GiaoThongAnToan-0.1.1.apk`.
 
@@ -107,7 +107,7 @@ Khi chuẩn bị phát hành chính thức, cần tạo khóa riêng (keystore) 
 1. Đăng ký miễn phí tại https://expo.dev/signup
 2. Mở Command Prompt:
    ```
-   cd C:\gtat\apps\mobile
+   cd /d D:\AI_CLAUDE\gtat\apps\mobile
    npx eas-cli login
    npx eas-cli init
    ```
@@ -115,7 +115,7 @@ Khi chuẩn bị phát hành chính thức, cần tạo khóa riêng (keystore) 
 
 ### Bước 2. Đặt địa chỉ backend
 **Lưu ý:** build đám mây **không đọc** file `.env` của bạn (file này không được tải lên).
-Mở `C:\gtat\apps\mobile\eas.json`, sửa dòng `EXPO_PUBLIC_API_URL` trong mục `"preview"`:
+Mở `D:\AI_CLAUDE\gtat\apps\mobile\eas.json`, sửa dòng `EXPO_PUBLIC_API_URL` trong mục `"preview"`:
 ```json
 "EXPO_PUBLIC_API_URL": "https://xxxx-xxxx.trycloudflare.com",
 ```
@@ -169,7 +169,7 @@ File APK **chỉ cài được trên Android**. Muốn thử trên iPhone phải
 | Hiện tượng | Cách xử lý |
 |---|---|
 | `BUILD FAILED` khi `assembleRelease` | Đọc dòng `What went wrong` ngay dưới, gửi tôi dòng đó |
-| Lỗi đường dẫn quá dài | Đảm bảo dự án ở `C:\gtat` (xem hướng dẫn chạy thử, mục 8) |
+| Lỗi đường dẫn quá dài | Đảm bảo dự án ở `D:\AI_CLAUDE\gtat` (xem hướng dẫn chạy thử, mục 8) |
 | Đồng nghiệp báo *"Ứng dụng chưa được cài đặt"* khi cài bản mới | Chưa tăng `versionCode`, hoặc bản cũ ký bằng khóa khác → gỡ bản cũ rồi cài lại |
 | *"Gói có vẻ không hợp lệ"* (parse error) | File tải về bị lỗi hoặc thiếu → tải lại; kiểm tra máy có Android 7.0 trở lên |
 | Mở app bị thoát ngay | Cắm điện thoại vào máy tính, chạy `adb logcat *:E`, gửi tôi các dòng lỗi |
