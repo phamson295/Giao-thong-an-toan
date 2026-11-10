@@ -171,8 +171,8 @@ Giao-thong-an-toan/
 Các máy chủ mặc định đặt ở nước ngoài và không cam kết mức độ sẵn sàng. Với ứng dụng của cơ quan nhà nước,
 việc gửi vị trí ra dịch vụ nước ngoài cần được cân nhắc; **tôi chưa xác định được quy định cụ thể áp dụng** – cần tham vấn pháp chế.
 
-> Hai dịch vụ tìm đường, tìm địa điểm **chưa được gọi thử thật** khi viết mã (môi trường phát triển chặn mạng tới các máy chủ này).
-> Phần đọc kết quả được viết theo định dạng công bố của Valhalla/Photon và kiểm thử bằng dữ liệu tự dựng.
+> Đã gọi thử thật ngày 10/11/2026 (tuyến Hồ Hoàn Kiếm → Đống Đa, Hà Nội, cả ô tô và xe máy): tìm địa điểm, tìm đường,
+> chỉ dẫn tiếng Việt và tính tiến độ đều cho kết quả đúng. Việc gọi từ trong ứng dụng trên điện thoại thì chưa thử.
 
 ## 6. Hướng dẫn chạy thử
 

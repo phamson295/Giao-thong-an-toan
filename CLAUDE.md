@@ -26,7 +26,7 @@ Tài liệu chính (đọc trước khi làm):
 ## Trạng thái (10/11/2026)
 - Chức năng app: cảnh báo (tốc độ theo ô tô/xe máy, ngược chiều, cấm vượt, camera), tìm điểm đến + dẫn đường từng chặng (Valhalla/Photon, tuyến lưu SQLite để dẫn tiếp khi mất sóng), báo cáo cộng đồng + hỏi xác nhận khi đi qua, cài đặt, quản lý vùng offline.
 - Đã kiểm tra: `npm install` ở gốc monorepo; shared 12/12 test; API chạy với PostGIS thật (trước khi thêm `speedLimitMoto`, sau đó chỉ typecheck); mobile typecheck + Metro bundle OK; admin typecheck OK.
-- **Chưa** build APK, **chưa** chạy trên điện thoại thật => giao diện mới và các lời gọi Valhalla/Photon chưa được thử thực tế.
+- **Chưa** build APK, **chưa** chạy trên điện thoại thật => giao diện mới chưa được thử thực tế. Định dạng Valhalla/Photon đã thử với máy chủ thật (qua curl + mã `route.ts`), chưa thử từ trong app.
 - Dữ liệu trong `db/init/002_seed.sql` là tọa độ giả lập.
 - Máy chủ tìm đường/tìm địa điểm mặc định là dịch vụ công cộng nước ngoài, chỉ để thử (xem `docs/KIEN_TRUC.md` mục 7).
 
