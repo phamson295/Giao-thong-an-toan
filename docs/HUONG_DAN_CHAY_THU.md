@@ -221,6 +221,7 @@ Muốn tạo tuyến khác: sửa tọa độ trong `tools\gia-lap\tao_tuyen.py`
 
 | Hiện tượng | Nguyên nhân / Cách xử lý |
 |---|---|
+| `npm.ps1 cannot be loaded because running scripts is disabled` | Đang dùng **PowerShell** (dấu nhắc bắt đầu bằng `PS`). Cách 1: chạy một lần `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, trả lời `Y`. Cách 2: gõ `npm.cmd` và `npx.cmd` thay cho `npm`, `npx`. Cách 3: dùng Command Prompt (`cmd`). Lưu ý trong PowerShell: `cd /d` bỏ chữ `/d`; `gradlew.bat` phải gõ `.\gradlew.bat` |
 | `'adb' is not recognized…` | Chưa thêm `platform-tools` vào Path (bước 2.4), hoặc chưa mở cửa sổ dòng lệnh mới |
 | `SDK location not found` | Chưa đặt biến `ANDROID_HOME`, hoặc sai đường dẫn |
 | `JAVA_HOME is not set` / lỗi phiên bản Java | Đặt `JAVA_HOME` trỏ tới thư mục `jbr` của Android Studio (bước 2.4) |
