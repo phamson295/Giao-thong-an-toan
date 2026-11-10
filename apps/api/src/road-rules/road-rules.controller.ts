@@ -16,7 +16,7 @@ export class RoadRulesController {
     const { rows } = await this.pool.query(
       `SELECT id::text, name,
               ST_AsGeoJSON(geom, 6)::json -> 'coordinates' AS coords,
-              speed_limit_car AS "speedLimitCar", oneway, no_overtaking AS "noOvertaking"
+              speed_limit_car AS "speedLimitCar", speed_limit_moto AS "speedLimitMoto", oneway, no_overtaking AS "noOvertaking"
          FROM road_rules
         WHERE geom && ST_MakeEnvelope($1, $2, $3, $4, 4326)
           AND updated_at > $5

@@ -4,6 +4,7 @@
 
 - Kế hoạch tổng thể: [`KE_HOACH.md`](KE_HOACH.md)
 - Kiến trúc, tech stack, cấu trúc thư mục, cách chạy: [`docs/KIEN_TRUC.md`](docs/KIEN_TRUC.md)
+- **Hướng dẫn sử dụng ứng dụng:** [`docs/HUONG_DAN_SU_DUNG.md`](docs/HUONG_DAN_SU_DUNG.md)
 - **Hướng dẫn cài Android Studio và chạy thử:** [`docs/HUONG_DAN_CHAY_THU.md`](docs/HUONG_DAN_CHAY_THU.md)
 - **Hướng dẫn tạo file APK gửi đồng nghiệp:** [`docs/HUONG_DAN_TAO_APK.md`](docs/HUONG_DAN_TAO_APK.md)
 

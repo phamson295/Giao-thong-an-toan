@@ -41,11 +41,16 @@ export interface RoadRule {
   coords: [number, number][];
   /** Tốc độ tối đa ô tô (km/h). null = chưa có dữ liệu. */
   speedLimitCar: number | null;
+  /** Tốc độ tối đa xe máy (km/h). null/undefined = dùng chung giới hạn của ô tô. */
+  speedLimitMoto?: number | null;
   /** true = đường một chiều, chiều cho phép là chiều vẽ của coords. */
   oneway: boolean;
   noOvertaking: boolean;
   name?: string | null;
 }
+
+/** Loại phương tiện người dùng đang đi. */
+export type VehicleType = 'car' | 'moto';
 
 /** Một lần đọc GPS (đã chuẩn hóa từ expo-location / trình duyệt). */
 export interface GpsFix {

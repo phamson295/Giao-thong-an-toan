@@ -10,3 +10,16 @@ export const MAP_STYLE_URL =
 
 /** Bán kính lấy điểm cảnh báo quanh xe từ CSDL cục bộ (m). */
 export const LOCAL_QUERY_RADIUS_M = 1500;
+
+/**
+ * Máy chủ tìm đường (giao thức Valhalla). Mặc định là máy chủ công cộng của cộng đồng
+ * OpenStreetMap Đức – CHỈ để thử nghiệm, giới hạn lượt dùng. Khi triển khai thật hãy trỏ
+ * về máy chủ Valhalla riêng (đã để sẵn trong docker-compose.yml).
+ */
+export const ROUTING_URL = process.env.EXPO_PUBLIC_ROUTING_URL ?? 'https://valhalla1.openstreetmap.de';
+
+/** Dịch vụ tìm địa điểm theo tên (giao thức Photon, dữ liệu OSM). Cũng chỉ để thử nghiệm. */
+export const GEOCODER_URL = process.env.EXPO_PUBLIC_GEOCODER_URL ?? 'https://photon.komoot.io';
+
+/** Lệch tuyến quá mức này (m) thì coi là đi chệch đường. */
+export const OFF_ROUTE_M = 60;

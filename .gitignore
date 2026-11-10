@@ -10,3 +10,4 @@ ios/
 *.pmtiles
 ml/runs/
 ml/datasets/
+*.tsbuildinfo

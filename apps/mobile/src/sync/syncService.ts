@@ -65,6 +65,12 @@ export async function report(type: HazardType, lng: number, lat: number, heading
   await flushOutbox();
 }
 
+/** Xác nhận ("còn") hoặc phủ nhận ("không còn") một điểm do cộng đồng báo. */
+export async function vote(hazardId: string, value: 'confirm' | 'deny') {
+  await enqueue(`/reports/${hazardId}/vote`, { vote: value, deviceId: await getDeviceId() });
+  await flushOutbox();
+}
+
 export async function flushOutbox(): Promise<void> {
   for (const item of await outboxItems()) {
     try {

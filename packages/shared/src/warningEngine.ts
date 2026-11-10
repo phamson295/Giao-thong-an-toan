@@ -8,7 +8,7 @@
  */
 import { angleDiff, bearingDeg, distanceM } from './geo';
 import type { MatchResult } from './mapMatching';
-import type { GpsFix, HazardPoint, HazardType, Warning } from './types';
+import type { GpsFix, HazardPoint, HazardType, RoadRule, VehicleType, Warning } from './types';
 
 export interface WarningConfig {
   /** Dung sai tốc độ trước khi cảnh báo (km/h). */
@@ -27,6 +27,16 @@ export interface WarningConfig {
   aheadConeDeg: number;
   /** Độ chính xác GPS tệ hơn mức này thì bỏ qua cảnh báo tốc độ/ngược chiều. */
   maxAccuracyM: number;
+  /** Loại phương tiện – quyết định dùng giới hạn tốc độ nào. */
+  vehicle: VehicleType;
+  /** Các loại điểm cảnh báo người dùng đã tắt. */
+  mutedHazardTypes: HazardType[];
+}
+
+/** Giới hạn tốc độ áp dụng cho loại xe (xe máy không có số riêng thì dùng số của ô tô). */
+export function speedLimitFor(road: RoadRule, vehicle: VehicleType): number | null {
+  if (vehicle === 'moto' && road.speedLimitMoto != null) return road.speedLimitMoto;
+  return road.speedLimitCar;
 }
 
 export const DEFAULT_CONFIG: WarningConfig = {
@@ -38,9 +48,11 @@ export const DEFAULT_CONFIG: WarningConfig = {
   lookaheadSeconds: 20,
   aheadConeDeg: 45,
   maxAccuracyM: 30,
+  vehicle: 'car',
+  mutedHazardTypes: [],
 };
 
-const HAZARD_LABEL: Record<HazardType, string> = {
+export const HAZARD_LABEL: Record<HazardType, string> = {
   speed_camera: 'camera giám sát tốc độ',
   red_light_camera: 'camera đèn đỏ',
   no_overtaking_start: 'biển cấm vượt',
@@ -66,12 +78,17 @@ export class WarningEngine {
     this.cfg = { ...DEFAULT_CONFIG, ...config };
   }
 
+  /** Đổi cấu hình khi người dùng sửa phần Cài đặt (giữ nguyên các bộ đếm). */
+  setConfig(config: Partial<WarningConfig>) {
+    this.cfg = { ...this.cfg, ...config };
+  }
+
   update(fix: GpsFix, match: MatchResult | null, hazards: HazardPoint[]): Warning[] {
     const out: Warning[] = [];
     const reliable = fix.accuracyM <= this.cfg.maxAccuracyM;
 
     // 1. Vượt tốc độ
-    const limit = match?.road.speedLimitCar ?? null;
+    const limit = match ? speedLimitFor(match.road, this.cfg.vehicle) : null;
     if (reliable && limit !== null && fix.speedKmh > limit + this.cfg.overspeedToleranceKmh) {
       this.overspeedSince ??= fix.timestamp;
       if (fix.timestamp - this.overspeedSince >= this.cfg.overspeedHoldMs) {
@@ -134,6 +151,7 @@ export class WarningEngine {
 
     for (const h of hazards) {
       if (h.deleted) continue;
+      if (this.cfg.mutedHazardTypes.includes(h.type)) continue;
       if (h.expiresAt && Date.parse(h.expiresAt) < now) continue;
 
       const d = distanceM(fix.lng, fix.lat, h.lng, h.lat);

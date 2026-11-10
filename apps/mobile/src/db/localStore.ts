@@ -37,6 +37,11 @@ export function getDb(): Promise<SQLite.SQLiteDatabase> {
       -- Ghi nhớ thời điểm đồng bộ cuối theo từng vùng
       CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
     `);
+    // Nâng cấp CSDL của bản cài cũ: thêm cột tốc độ xe máy nếu chưa có
+    const cols = await db.getAllAsync<{ name: string }>('PRAGMA table_info(road_rules)');
+    if (!cols.some((c) => c.name === 'speed_limit_moto')) {
+      await db.execAsync('ALTER TABLE road_rules ADD COLUMN speed_limit_moto INTEGER');
+    }
     return db;
   })();
   return dbPromise;
@@ -99,9 +104,9 @@ export async function upsertRoadRules(items: RoadRule[]): Promise<void> {
       const lats = r.coords.map((c) => c[1]);
       await db.runAsync(
         `INSERT OR REPLACE INTO road_rules
-           (id, name, coords, speed_limit_car, oneway, no_overtaking, min_lng, min_lat, max_lng, max_lat)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        r.id, r.name ?? null, JSON.stringify(r.coords), r.speedLimitCar, r.oneway ? 1 : 0,
+           (id, name, coords, speed_limit_car, speed_limit_moto, oneway, no_overtaking, min_lng, min_lat, max_lng, max_lat)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        r.id, r.name ?? null, JSON.stringify(r.coords), r.speedLimitCar, r.speedLimitMoto ?? null, r.oneway ? 1 : 0,
         r.noOvertaking ? 1 : 0, Math.min(...lngs), Math.min(...lats), Math.max(...lngs), Math.max(...lats),
       );
     }
@@ -110,19 +115,19 @@ export async function upsertRoadRules(items: RoadRule[]): Promise<void> {
 
 type RoadRow = {
   id: string; name: string | null; coords: string; speed_limit_car: number | null;
-  oneway: number; no_overtaking: number;
+  speed_limit_moto: number | null; oneway: number; no_overtaking: number;
 };
 
 export async function roadRulesNear(lng: number, lat: number, radiusM = 60): Promise<RoadRule[]> {
   const [w, s, e, n] = bboxAround(lng, lat, radiusM);
   const db = await getDb();
   const rows = await db.getAllAsync<RoadRow>(
-    `SELECT id, name, coords, speed_limit_car, oneway, no_overtaking FROM road_rules
+    `SELECT id, name, coords, speed_limit_car, speed_limit_moto, oneway, no_overtaking FROM road_rules
       WHERE max_lat >= ? AND min_lat <= ? AND max_lng >= ? AND min_lng <= ?`,
     s, n, w, e,
   );
   return rows.map((r) => ({
-    id: r.id, name: r.name, coords: JSON.parse(r.coords), speedLimitCar: r.speed_limit_car,
+    id: r.id, name: r.name, coords: JSON.parse(r.coords), speedLimitCar: r.speed_limit_car, speedLimitMoto: r.speed_limit_moto,
     oneway: r.oneway === 1, noOvertaking: r.no_overtaking === 1,
   }));
 }
@@ -155,4 +160,21 @@ export async function getMeta(key: string): Promise<string | null> {
 export async function setMeta(key: string, value: string) {
   const db = await getDb();
   await db.runAsync('INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)', key, value);
+}
+
+export async function getJsonMeta<T>(key: string, fallback: T): Promise<T> {
+  const raw = await getMeta(key);
+  if (!raw) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+export const setJsonMeta = (key: string, value: unknown) => setMeta(key, JSON.stringify(value));
+
+export async function removeMeta(key: string) {
+  const db = await getDb();
+  await db.runAsync('DELETE FROM meta WHERE key = ?', key);
 }

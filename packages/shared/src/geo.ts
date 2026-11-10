@@ -34,14 +34,15 @@ export function angleDiff(a: number, b: number): number {
 }
 
 /**
- * Khoảng cách từ điểm P tới đoạn thẳng AB (mét).
+ * Chiếu điểm P lên đoạn thẳng AB.
+ * Trả về khoảng cách từ P tới đoạn (mét) và vị trí hình chiếu t (0 = tại A, 1 = tại B).
  * Chiếu phẳng cục bộ quanh P – sai số không đáng kể với đoạn < vài km.
  */
-export function distanceToSegmentM(
+export function projectOnSegment(
   p: [number, number],
   a: [number, number],
   b: [number, number],
-): number {
+): { distanceM: number; t: number } {
   const kx = Math.cos(toRad(p[1])) * 111_320;
   const ky = 110_540;
   const ax = (a[0] - p[0]) * kx, ay = (a[1] - p[1]) * ky;
@@ -49,8 +50,16 @@ export function distanceToSegmentM(
   const dx = bx - ax, dy = by - ay;
   const len2 = dx * dx + dy * dy;
   const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, -(ax * dx + ay * dy) / len2));
-  const cx = ax + t * dx, cy = ay + t * dy;
-  return Math.hypot(cx, cy);
+  return { distanceM: Math.hypot(ax + t * dx, ay + t * dy), t };
+}
+
+/** Khoảng cách từ điểm P tới đoạn thẳng AB (mét). */
+export function distanceToSegmentM(
+  p: [number, number],
+  a: [number, number],
+  b: [number, number],
+): number {
+  return projectOnSegment(p, a, b).distanceM;
 }
 
 /** Khung chữ nhật bao quanh một điểm với bán kính r mét. */

@@ -83,6 +83,7 @@ Giao-thong-an-toan/
 │       ├── src/geo.ts          #   Khoảng cách, góc phương vị, bbox
 │       ├── src/mapMatching.ts  #   Gắn vị trí GPS vào đoạn đường
 │       ├── src/warningEngine.ts#   ★ Bộ máy cảnh báo (tốc độ, ngược chiều, cấm vượt, điểm phía trước)
+│       ├── src/route.ts        #   ★ Đọc tuyến Valhalla, chỉ dẫn tiếng Việt, tiến độ trên tuyến
 │       └── test/               #   Kiểm thử tự động (npm test)
 │
 ├── apps/
@@ -99,13 +100,16 @@ Giao-thong-an-toan/
 │   ├── mobile/                 # Ứng dụng Expo (Android/iOS)
 │   │   ├── App.tsx
 │   │   └── src/
-│   │       ├── config/         #   API_URL, MAP_STYLE_URL
+│   │       ├── config/         #   API_URL, MAP_STYLE_URL, ROUTING_URL, GEOCODER_URL
 │   │       ├── db/localStore.ts#   ★ SQLite: hazards, road_rules, outbox, meta
-│   │       ├── sync/           #   Đồng bộ REST + realtime + hàng đợi báo cáo
+│   │       ├── sync/           #   Đồng bộ REST + realtime + hàng đợi báo cáo, xác nhận
 │   │       ├── location/       #   Đọc GPS
 │   │       ├── warnings/       #   Nối GPS → engine → giọng nói
-│   │       ├── offline/        #   Tải gói bản đồ + dữ liệu một vùng
-│   │       └── screens/MapScreen.tsx  # Bản đồ 2D/3D, tốc độ, nút báo cáo
+│   │       ├── navigation/     #   Tìm địa điểm, tìm đường, theo dõi tuyến, nhắc rẽ
+│   │       ├── settings/       #   Cài đặt người dùng (lưu SQLite)
+│   │       ├── offline/        #   Tải, liệt kê, xóa vùng bản đồ offline
+│   │       ├── components/     #   Nút tròn, bảng tốc độ, dải cảnh báo, thẻ dẫn đường, bảng báo cáo
+│   │       └── screens/        #   MapScreen (chính), SearchScreen, SettingsScreen, OfflineScreen
 │   │
 │   └── admin/                  # Trang quản trị Next.js + Tailwind
 │       ├── app/
@@ -146,6 +150,30 @@ Giao-thong-an-toan/
 
 ---
 
+## 6a. Dẫn đường trong ứng dụng (cập nhật 10/11/2026)
+
+| Việc | Cách làm | Cần mạng? |
+|---|---|---|
+| Tìm địa điểm theo tên | Dịch vụ giao thức **Photon** (`EXPO_PUBLIC_GEOCODER_URL`) | Có |
+| Nhập tọa độ `21.03, 105.85`, nhấn giữ trên bản đồ | Xử lý ngay trên máy | Không |
+| Tìm đường | Máy chủ giao thức **Valhalla** (`EXPO_PUBLIC_ROUTING_URL`); xe máy dùng chế độ `motor_scooter` (tránh cao tốc) | Có |
+| Chỉ dẫn rẽ, quãng đường còn lại, phát hiện đi chệch | `packages/shared/src/route.ts`, chạy trên máy với tuyến đã lưu trong SQLite | Không |
+| Tìm lại đường khi đi chệch | Gọi lại máy chủ; mất mạng thì giữ tuyến cũ và nhắc quay lại | Có |
+
+## 7. Dịch vụ bên ngoài đang dùng mặc định – cần thay trước khi dùng thật
+
+| Dịch vụ | Mặc định (chỉ để thử nghiệm) | Dữ liệu gửi đi | Hướng thay thế |
+|---|---|---|---|
+| Nền bản đồ | `tiles.openfreemap.org` | Vùng bản đồ đang xem | Tự host PMTiles, hoặc Goong/Vietmap |
+| Tìm đường | `valhalla1.openstreetmap.de` (máy chủ cộng đồng OSM Đức, giới hạn lượt dùng) | Tọa độ điểm đi, điểm đến | Chạy Valhalla trong `docker-compose.yml` với dữ liệu OSM Việt Nam |
+| Tìm địa điểm | `photon.komoot.io` | Chuỗi tìm kiếm, vị trí gần đúng | Tự host Photon, hoặc API Goong/Vietmap |
+
+Các máy chủ mặc định đặt ở nước ngoài và không cam kết mức độ sẵn sàng. Với ứng dụng của cơ quan nhà nước,
+việc gửi vị trí ra dịch vụ nước ngoài cần được cân nhắc; **tôi chưa xác định được quy định cụ thể áp dụng** – cần tham vấn pháp chế.
+
+> Hai dịch vụ tìm đường, tìm địa điểm **chưa được gọi thử thật** khi viết mã (môi trường phát triển chặn mạng tới các máy chủ này).
+> Phần đọc kết quả được viết theo định dạng công bố của Valhalla/Photon và kiểm thử bằng dữ liệu tự dựng.
+
 ## 6. Hướng dẫn chạy thử
 
 ```bash
@@ -173,7 +201,7 @@ python import_osm.py vung.osm.pbf
 ```
 
 ### Đã kiểm tra khi viết mã mẫu
-- `packages/shared`: 6/6 bài kiểm thử đạt (tốc độ, ngược chiều, camera phía trước/phía sau, hết hạn, chống đọc lặp).
+- `packages/shared`: 12/12 bài kiểm thử đạt (cảnh báo, giới hạn theo loại xe, đọc tuyến, tiến độ, nhắc rẽ).
 - `apps/api`: biên dịch thành công; chạy với PostgreSQL 16 + PostGIS thật: đồng bộ, gộp báo cáo trùng, tự xóa khi bị phủ nhận, kiểm tra dữ liệu đầu vào, phát realtime qua socket.io đều hoạt động.
 - `apps/mobile`: kiểm tra kiểu TypeScript đạt, Metro đóng gói Android thành công. **Chưa chạy trên điện thoại thật.**
 - `apps/admin`: `next build` thành công.

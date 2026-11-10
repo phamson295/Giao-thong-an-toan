@@ -52,3 +52,31 @@ export async function downloadRegion(
 /** Tiện ích: vùng vuông bán kính r km quanh vị trí hiện tại. */
 export const regionAround = (lng: number, lat: number, radiusKm: number): BBox =>
   bboxAround(lng, lat, radiusKm * 1000);
+
+export interface SavedRegion {
+  id: string;
+  name: string;
+  percent: number;
+  sizeMb: number;
+  complete: boolean;
+}
+
+/** Danh sách các vùng bản đồ đã tải về máy. */
+export async function listRegions(): Promise<SavedRegion[]> {
+  const packs = await OfflineManager.getPacks();
+  const out: SavedRegion[] = [];
+  for (const p of packs) {
+    const st = await p.status().catch(() => null);
+    out.push({
+      id: p.id,
+      name: String(p.metadata?.name ?? 'Vùng chưa đặt tên'),
+      percent: Math.round(st?.percentage ?? 0),
+      sizeMb: Math.round(((st?.completedResourceSize ?? 0) / 1_048_576) * 10) / 10,
+      complete: st?.state === 'complete',
+    });
+  }
+  return out;
+}
+
+/** Xóa gói bản đồ của một vùng (dữ liệu cảnh báo trong SQLite vẫn giữ, vì rất nhẹ). */
+export const deleteRegion = (id: string) => OfflineManager.deletePack(id);
