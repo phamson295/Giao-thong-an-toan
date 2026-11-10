@@ -86,12 +86,12 @@ Nếu không bật được: bỏ qua máy ảo, dùng **điện thoại thật*
 
 ## 3. Tải mã nguồn và cài thư viện
 
-> ⚠️ Windows giới hạn độ dài đường dẫn, dễ gây lỗi khi build. **Đặt dự án ở thư mục ngắn**, ví dụ `D:\AI_CLAUDE\giao-thong-app`.
+> ⚠️ Windows giới hạn độ dài đường dẫn, dễ gây lỗi khi build. **Đặt dự án ở thư mục ngắn**, ví dụ `D:\AI_CLAUDE\Lai-xe-an-toan`.
 
 ```
 cd /d D:\AI_CLAUDE
-git clone https://github.com/phamson295/giao-thong-an-toan.git giao-thong-app
-cd giao-thong-app
+git clone https://github.com/phamson295/giao-thong-an-toan.git Lai-xe-an-toan
+cd Lai-xe-an-toan
 git checkout ccr-f6135564-hcnoq6
 npm install
 ```
@@ -129,7 +129,7 @@ copy apps\mobile\.env.example apps\mobile\.env
 
 ## 5. MỨC 1 – Chạy ứng dụng
 
-Khi máy ảo đang mở (hoặc điện thoại đã cắm), chạy ở thư mục `D:\AI_CLAUDE\giao-thong-app`:
+Khi máy ảo đang mở (hoặc điện thoại đã cắm), chạy ở thư mục `D:\AI_CLAUDE\Lai-xe-an-toan`:
 ```
 npm run android
 ```
@@ -152,7 +152,7 @@ Góc trên hiện **"Offline – dùng dữ liệu đã tải"** là bình thư�
 2. Khởi động lại máy nếu được yêu cầu. Mở Docker Desktop, chờ biểu tượng cá voi chuyển sang trạng thái đang chạy.
 
 ### 6.2. Khởi động cơ sở dữ liệu và backend
-Mở cửa sổ Command Prompt **mới** tại `D:\AI_CLAUDE\giao-thong-app`:
+Mở cửa sổ Command Prompt **mới** tại `D:\AI_CLAUDE\Lai-xe-an-toan`:
 ```
 docker compose up -d db redis
 npm run dev:api
@@ -188,7 +188,7 @@ Dữ liệu mẫu có một đoạn đường **một chiều, giới hạn 50 k
 File `tools\gia-lap\tuyen-mau.gpx` mô phỏng xe chạy **60 km/h** qua các điểm này.
 
 1. Ở thanh công cụ bên cạnh máy ảo, bấm **⋯ (Extended controls)** → **Location**.
-2. Tab **Single points** (hoặc **Routes**, tùy phiên bản) → **Load GPX/KML** → chọn `D:\AI_CLAUDE\giao-thong-app\tools\gia-lap\tuyen-mau.gpx`.
+2. Tab **Single points** (hoặc **Routes**, tùy phiên bản) → **Load GPX/KML** → chọn `D:\AI_CLAUDE\Lai-xe-an-toan\tools\gia-lap\tuyen-mau.gpx`.
 3. Bấm ▶ **Play route**. Tốc độ phát để **1x**.
 
 Những gì sẽ xảy ra (bật loa máy tính):
@@ -224,7 +224,7 @@ Muốn tạo tuyến khác: sửa tọa độ trong `tools\gia-lap\tao_tuyen.py`
 | `'adb' is not recognized…` | Chưa thêm `platform-tools` vào Path (bước 2.4), hoặc chưa mở cửa sổ dòng lệnh mới |
 | `SDK location not found` | Chưa đặt biến `ANDROID_HOME`, hoặc sai đường dẫn |
 | `JAVA_HOME is not set` / lỗi phiên bản Java | Đặt `JAVA_HOME` trỏ tới thư mục `jbr` của Android Studio (bước 2.4) |
-| Lỗi `Filename longer than 260 characters`, lỗi CMake/ninja | Đường dẫn dự án quá dài → chuyển dự án về `D:\AI_CLAUDE\giao-thong-app` |
+| Lỗi `Filename longer than 260 characters`, lỗi CMake/ninja | Đường dẫn dự án quá dài → chuyển dự án về `D:\AI_CLAUDE\Lai-xe-an-toan` |
 | `No connected devices` / `No emulators found` | Mở máy ảo trước, hoặc kiểm tra `adb devices` |
 | Build báo hết bộ nhớ (`OutOfMemory`) | Đóng bớt chương trình; mở `apps\mobile\android\gradle.properties`, sửa dòng `org.gradle.jvmargs=-Xmx4096m` |
 | Bản đồ trắng/xám | Thiết bị không có Internet. Kiểm tra mạng của máy ảo (mở trình duyệt Chrome trong máy ảo) |

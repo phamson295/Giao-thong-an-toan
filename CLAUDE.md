@@ -4,7 +4,7 @@
 - Công chức Chi cục Kiểm lâm. Ứng dụng phục vụ lái xe và tuần tra thực địa (vùng lõi rừng thường mất sóng).
 - Trả lời **bằng tiếng Việt**, có cấu trúc, đi thẳng vấn đề, ưu tiên hướng dẫn từng bước làm được ngay.
 - Có nhiều phương án thì so sánh ưu nhược điểm. Chưa chắc chắn thì nói rõ, không tự đoán.
-- Máy tính: **Windows**. Dự án đặt tại `D:\AI_CLAUDE\giao-thong-app` (trong cmd dùng `cd /d` khi đổi ổ đĩa). Đã có JDK 21 và Android SDK (khoảng `D:\AI_CLAUDE\tools`, cần xác định thư mục con chứa `platform-tools`).
+- Máy tính: **Windows**. Dự án đặt tại `D:\AI_CLAUDE\Lai-xe-an-toan` (trong cmd dùng `cd /d` khi đổi ổ đĩa). Đã có JDK 21 và Android SDK (khoảng `D:\AI_CLAUDE\tools`, cần xác định thư mục con chứa `platform-tools`).
 
 ## Dự án
 Ứng dụng dẫn đường và cảnh báo giao thông: tốc độ giới hạn, cấm vượt, ngược chiều, camera, báo cáo cộng đồng. Nguyên tắc **offline-first**: bộ máy cảnh báo chạy trên điện thoại, chỉ đọc SQLite cục bộ; cloud chỉ đồng bộ dữ liệu.
